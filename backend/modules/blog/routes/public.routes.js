@@ -1,17 +1,18 @@
-// modules/blog/routes/public.routes.js
-const r = require("express").Router();
-const pub = require("../controller/public.controller");
+const express = require("express");
+const router = express.Router();
 
-// list (new/old via ?sort=new|old)
-r.get("/", pub.publicList);
+const controller = require("../controller/public.controller");
 
-// search BEFORE slug to avoid being captured by '/:slug'
-r.get("/search", pub.publicSearch);
+// Blog list (?sort=new|old)
+router.get("/", controller.publicList);
 
-// by category
-r.get("/category/:slug", pub.publicByCategory);
+// Blog search (placed before slug to avoid conflict)
+router.get("/search", controller.publicSearch);
 
-// single by slug
-r.get("/:slug", pub.publicRead);
+// Blogs by category
+router.get("/category/:slug", controller.publicByCategory);
 
-module.exports = r;
+// Single blog by slug
+router.get("/:slug", controller.publicRead);
+
+module.exports = router;

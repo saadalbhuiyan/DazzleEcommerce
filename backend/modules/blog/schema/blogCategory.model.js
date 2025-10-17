@@ -1,4 +1,5 @@
-// modules/blog/schema/blogCategory.model.js
+// blog category schema
+
 const { Schema, model, models } = require("mongoose");
 
 const BlogCategorySchema = new Schema(
@@ -10,7 +11,8 @@ const BlogCategorySchema = new Schema(
   { timestamps: true }
 );
 
-// Prevent OverwriteModelError when hot reloading
-const BlogCategory = models.BlogCategory || model("BlogCategory", BlogCategorySchema);
+// reuse model if it already exists (prevents overwrite errors)
+const BlogCategory =
+  models.BlogCategory || model("BlogCategory", BlogCategorySchema);
 
-module.exports = BlogCategory; 
+module.exports = BlogCategory;

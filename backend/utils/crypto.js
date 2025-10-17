@@ -1,26 +1,37 @@
+// crypto helpers: hashing (bcrypt) + symmetric encrypt/decrypt (AES-256-CBC)
+
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
-const SALT = 10;
-const ENC_KEY = (process.env.ENCRYPTION_KEY || "").padEnd(32,"0").slice(0,32);
-const IV_LEN = 16;
+// config
+const SALT_ROUNDS = 10; // bcrypt cost
+const ENC_KEY = (process.env.ENCRYPTION_KEY || "").padEnd(32, "0").slice(0, 32); // 32 bytes
+const IV_LEN = 16; // 16 bytes for AES-CBC
 
-const hash = (s) => bcrypt.hash(s, SALT);
-const verify = (s, h) => bcrypt.compare(s, h);
+// password hashing
+const hash = (str) => bcrypt.hash(str, SALT_ROUNDS);
+const verify = (str, hashed) => bcrypt.compare(str, hashed);
 
-function encrypt(plain){
+// AES-256-CBC encrypt -> "ivBase64:cipherBase64"
+function encrypt(plain) {
   const iv = crypto.randomBytes(IV_LEN);
   const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(ENC_KEY), iv);
+
   let enc = cipher.update(plain, "utf8", "base64");
   enc += cipher.final("base64");
-  return iv.toString("base64") + ":" + enc;
+
+  return `${iv.toString("base64")}:${enc}`;
 }
-function decrypt(enc){
-  const [ivb64, data] = enc.split(":");
-  const iv = Buffer.from(ivb64, "base64");
+
+// AES-256-CBC decrypt from "ivBase64:cipherBase64"
+function decrypt(enc) {
+  const [ivB64, dataB64] = enc.split(":");
+  const iv = Buffer.from(ivB64, "base64");
   const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(ENC_KEY), iv);
-  let dec = decipher.update(data, "base64", "utf8");
+
+  let dec = decipher.update(dataB64, "base64", "utf8");
   dec += decipher.final("utf8");
+
   return dec;
 }
 

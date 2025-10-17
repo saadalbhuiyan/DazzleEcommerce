@@ -1,10 +1,13 @@
-const r = require("express").Router();
+const express = require("express");
+const router = express.Router();
+
 const adminAuth = require("../../../middleware/authAdmin");
-const c = require("../controller/admin.controller");
+const controller = require("../controller/admin.controller");
 
-r.post("/",    adminAuth, c.create);
-r.get("/",     adminAuth, c.read);
-r.put("/:id",  adminAuth, c.update);
-r.delete("/:id", adminAuth, c.remove);
+// Basic CRUD routes
+router.post("/", adminAuth, controller.create);
+router.get("/", adminAuth, controller.read);
+router.put("/:id", adminAuth, controller.update);
+router.delete("/:id", adminAuth, controller.remove);
 
-module.exports = r;
+module.exports = router;

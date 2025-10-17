@@ -1,27 +1,29 @@
-const r = require("express").Router();
+const express = require("express");
+const router = express.Router();
+
 const adminAuth = require("../../../middleware/authAdmin");
 const { uploadAnyImage } = require("../../../middleware/uploadFile");
-const c = require("../controller/admin.controller");
+const controller = require("../controller/admin.controller");
 
-// sessions
-r.post("/login",   c.login);
-r.post("/refresh", c.refresh);
-r.post("/logout",  c.logout);
+// Auth routes
+router.post("/login", controller.login);
+router.post("/refresh", controller.refresh);
+router.post("/logout", controller.logout);
 
-// profile name
-r.post("/profile/name",   adminAuth, c.nameCreate);
-r.get("/profile/name",    adminAuth, c.nameRead);
-r.put("/profile/name",    adminAuth, c.nameUpdate);
-r.delete("/profile/name", adminAuth, c.nameDelete);
+// Profile name routes
+router.post("/profile/name", adminAuth, controller.nameCreate);
+router.get("/profile/name", adminAuth, controller.nameRead);
+router.put("/profile/name", adminAuth, controller.nameUpdate);
+router.delete("/profile/name", adminAuth, controller.nameDelete);
 
-// profile picture (multipart: file)
-r.post("/profile/picture",    adminAuth, uploadAnyImage, c.picCreate);
-r.get("/profile/picture",     adminAuth, c.picRead);
-r.put("/profile/picture",     adminAuth, uploadAnyImage, c.picUpdate);
-r.delete("/profile/picture",  adminAuth, c.picDelete);
+// Profile picture routes
+router.post("/profile/picture", adminAuth, uploadAnyImage, controller.picCreate);
+router.get("/profile/picture", adminAuth, controller.picRead);
+router.put("/profile/picture", adminAuth, uploadAnyImage, controller.picUpdate);
+router.delete("/profile/picture", adminAuth, controller.picDelete);
 
-// insights
-r.get("/users/count", adminAuth, c.usersCount);
-r.get("/users",       adminAuth, c.usersList);
+// User insights
+router.get("/users/count", adminAuth, controller.usersCount);
+router.get("/users", adminAuth, controller.usersList);
 
-module.exports = r;
+module.exports = router;

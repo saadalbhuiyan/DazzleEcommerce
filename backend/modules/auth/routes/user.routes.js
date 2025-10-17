@@ -1,38 +1,39 @@
-const r = require("express").Router();
+const express = require("express");
+const router = express.Router();
+
 const userAuth = require("../../../middleware/authUser");
 const { uploadAnyImage } = require("../../../middleware/uploadFile");
-const c = require("../controller/user.controller");
+const controller = require("../controller/user.controller");
 
-// auth
-r.post("/otp/request", c.requestOtp);
-r.post("/otp/verify",  c.verifyOtp);
-r.post("/refresh",     c.refresh);
-r.post("/logout",      c.logout);
-r.delete("/account",   c.deleteAccount);
+// Auth routes
+router.post("/otp/request", controller.requestOtp);
+router.post("/otp/verify", controller.verifyOtp);
+router.post("/refresh", controller.refresh);
+router.post("/logout", controller.logout);
+router.delete("/account", controller.deleteAccount);
 
-// profile fields CRUD
-// name
-r.post("/profile/name",    userAuth, c.nameCreate);
-r.get("/profile/name",     userAuth, c.nameRead);
-r.put("/profile/name",     userAuth, c.nameUpdate);
-r.delete("/profile/name",  userAuth, c.nameDelete);
+// Profile name routes
+router.post("/profile/name", userAuth, controller.nameCreate);
+router.get("/profile/name", userAuth, controller.nameRead);
+router.put("/profile/name", userAuth, controller.nameUpdate);
+router.delete("/profile/name", userAuth, controller.nameDelete);
 
-// mobile
-r.post("/profile/mobile",   userAuth, c.mobileCreate);
-r.get("/profile/mobile",    userAuth, c.mobileRead);
-r.put("/profile/mobile",    userAuth, c.mobileUpdate);
-r.delete("/profile/mobile", userAuth, c.mobileDelete);
+// Profile mobile routes
+router.post("/profile/mobile", userAuth, controller.mobileCreate);
+router.get("/profile/mobile", userAuth, controller.mobileRead);
+router.put("/profile/mobile", userAuth, controller.mobileUpdate);
+router.delete("/profile/mobile", userAuth, controller.mobileDelete);
 
-// address
-r.post("/profile/address",   userAuth, c.addressCreate);
-r.get("/profile/address",    userAuth, c.addressRead);
-r.put("/profile/address",    userAuth, c.addressUpdate);
-r.delete("/profile/address", userAuth, c.addressDelete);
+// Profile address routes
+router.post("/profile/address", userAuth, controller.addressCreate);
+router.get("/profile/address", userAuth, controller.addressRead);
+router.put("/profile/address", userAuth, controller.addressUpdate);
+router.delete("/profile/address", userAuth, controller.addressDelete);
 
-// picture (multipart: file)
-r.post("/profile/picture",   userAuth, uploadAnyImage, c.picCreate);
-r.get("/profile/picture",    userAuth, c.picRead);
-r.put("/profile/picture",    userAuth, uploadAnyImage, c.picUpdate);
-r.delete("/profile/picture", userAuth, c.picDelete);
+// Profile picture routes (multipart: file)
+router.post("/profile/picture", userAuth, uploadAnyImage, controller.picCreate);
+router.get("/profile/picture", userAuth, controller.picRead);
+router.put("/profile/picture", userAuth, uploadAnyImage, controller.picUpdate);
+router.delete("/profile/picture", userAuth, controller.picDelete);
 
-module.exports = r;
+module.exports = router;

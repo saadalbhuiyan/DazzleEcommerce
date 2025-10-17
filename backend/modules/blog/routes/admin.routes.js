@@ -1,26 +1,25 @@
-// modules/blog/routes/admin.routes.js
-const r = require("express").Router();
+const express = require("express");
+const router = express.Router();
+
 const adminAuth = require("../../../middleware/authAdmin");
 const { uploadAnyImage } = require("../../../middleware/uploadFile");
+const controller = require("../controller/admin.controller");
 
-// use your admin controller (contains both blog & category handlers)
-const admin = require("../controller/admin.controller");
+// Category routes
+router.post("/categories", adminAuth, controller.categoryCreate);
+router.get("/categories", adminAuth, controller.categoryList);
+router.put("/categories/:id", adminAuth, controller.categoryUpdate);
+router.delete("/categories/:id", adminAuth, controller.categoryRemove);
 
-// --- categories FIRST (avoid '/:id' capture) ---
-r.post("/categories", adminAuth, admin.categoryCreate);
-r.get("/categories", adminAuth, admin.categoryList);
-r.put("/categories/:id", adminAuth, admin.categoryUpdate);
-r.delete("/categories/:id", adminAuth, admin.categoryRemove);
+// Blog search (placed before :id routes)
+router.get("/search", adminAuth, controller.blogSearch);
 
-// --- blog search BEFORE :id ---
-r.get("/search", adminAuth, admin.blogSearch);
+// Blog routes
+router.post("/", adminAuth, uploadAnyImage, controller.blogCreate);
+router.get("/", adminAuth, controller.blogList);
+router.get("/:id", adminAuth, controller.blogRead);
+router.put("/:id", adminAuth, uploadAnyImage, controller.blogUpdate);
+router.patch("/:id/status", adminAuth, controller.blogToggleStatus);
+router.delete("/:id", adminAuth, controller.blogRemove);
 
-// --- blogs ---
-r.post("/", adminAuth, uploadAnyImage, admin.blogCreate);
-r.get("/", adminAuth, admin.blogList);
-r.get("/:id", adminAuth, admin.blogRead);
-r.put("/:id", adminAuth, uploadAnyImage, admin.blogUpdate);
-r.patch("/:id/status", adminAuth, admin.blogToggleStatus);
-r.delete("/:id", adminAuth, admin.blogRemove);
-
-module.exports = r;
+module.exports = router;
